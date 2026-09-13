@@ -124,12 +124,16 @@ export const getPublicGift = createServerFn({ method: "GET" })
 
 /** Create a gift without any account. Returns the public id and the private edit token. */
 export const createGift = createServerFn({ method: "POST" })
-  .inputValidator((data: GiftInput) => data)
+  .inputValidator((data: GiftInput & { ownerKey?: string }) => data)
   .handler(async ({ data }): Promise<{ id: string; token: string }> => {
     const token = crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().replace(/-/g, "");
     const { data: row, error } = await adminClient()
       .from("gifts")
-      .insert({ ...toRow(data), edit_token_hash: await sha256(token) })
+      .insert({
+        ...toRow(data),
+        edit_token_hash: await sha256(token),
+        owner_hash: data.ownerKey ? await sha256(data.ownerKey) : null,
+      })
       .select("id")
       .single();
 
@@ -137,9 +141,39 @@ export const createGift = createServerFn({ method: "POST" })
     return { id: row.id as string, token };
   });
 
-/** Read a gift with all its content, for the creator's private edit link. */
+/** Every gift created from this browser, straight from the cloud database. */
+export const listMyGifts = createServerFn({ method: "GET" })
+  .inputValidator((data: { ownerKey: string }) => data)
+  .handler(async ({ data }): Promise<GiftSummary[]> => {
+    if (!data.ownerKey) return [];
+    const { data: rows, error } = await adminClient()
+      .from("gifts")
+      .select("id,recipient_name,celebrate_at,updated_at")
+      .eq("owner_hash", await sha256(data.ownerKey))
+      .order("updated_at", { ascending: false });
+    if (error || !rows) return [];
+    return rows.map((r: any) => ({
+      id: r.id as string,
+      recipientName: r.recipient_name as string,
+      celebrateAt: r.celebrate_at as string,
+      updatedAt: r.updated_at as string,
+    }));
+  });
+
+async function authorize(
+  row: any,
+  creds: { token?: string | undefined; ownerKey?: string | undefined },
+): Promise<boolean> {
+  if (creds.token && row.edit_token_hash === (await sha256(creds.token))) return true;
+  if (creds.ownerKey && row.owner_hash && row.owner_hash === (await sha256(creds.ownerKey))) {
+    return true;
+  }
+  return false;
+}
+
+/** Read a gift with all its content, for the creator (edit link or owner key). */
 export const getGiftForEdit = createServerFn({ method: "GET" })
-  .inputValidator((data: { giftId: string; token: string }) => data)
+  .inputValidator((data: { giftId: string; token?: string; ownerKey?: string }) => data)
   .handler(async ({ data }): Promise<GiftConfig | null> => {
     const admin = adminClient();
     const { data: row, error } = await admin
@@ -148,26 +182,33 @@ export const getGiftForEdit = createServerFn({ method: "GET" })
       .eq("id", data.giftId)
       .maybeSingle();
     if (error || !row) return null;
-    if ((row as any).edit_token_hash !== (await sha256(data.token))) return null;
+    if (!(await authorize(row, data))) return null;
     return rowToGift(row);
   });
 
 export const updateGift = createServerFn({ method: "POST" })
-  .inputValidator((data: GiftInput & { giftId: string; token: string }) => data)
+  .inputValidator(
+    (data: GiftInput & { giftId: string; token?: string; ownerKey?: string }) => data,
+  )
   .handler(async ({ data }): Promise<{ ok: true }> => {
     const admin = adminClient();
     const { data: row } = await admin
       .from("gifts")
-      .select("id,edit_token_hash")
+      .select("id,edit_token_hash,owner_hash")
       .eq("id", data.giftId)
       .maybeSingle();
-    if (!row || (row as any).edit_token_hash !== (await sha256(data.token))) {
+    if (!row || !(await authorize(row, data))) {
       throw new Error("This edit link is not valid");
     }
-    const { error } = await admin
-      .from("gifts")
-      .update({ ...toRow(data), updated_at: new Date().toISOString() })
-      .eq("id", data.giftId);
+    const patch: Record<string, unknown> = {
+      ...toRow(data),
+      updated_at: new Date().toISOString(),
+    };
+    // Claim ownership for this browser when the gift has no owner yet.
+    if (!(row as any).owner_hash && data.ownerKey) {
+      patch["owner_hash"] = await sha256(data.ownerKey);
+    }
+    const { error } = await admin.from("gifts").update(patch).eq("id", data.giftId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
