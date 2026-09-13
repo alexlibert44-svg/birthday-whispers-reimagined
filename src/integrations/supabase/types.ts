@@ -14,7 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      gifts: {
+        Row: {
+          accent_color: string
+          celebrate_at: string
+          created_at: string
+          creator_id: string
+          decoration_emoji: string
+          decorations: Json
+          edit_token_hash: string | null
+          extra_messages: Json
+          final_message: string
+          id: string
+          language: string
+          main_message: string
+          media: Json
+          music_enabled: boolean
+          music_url: string | null
+          nickname: string | null
+          photos: Json
+          recipient_name: string
+          surprise_media: Json | null
+          surprise_message: string
+          theme: string
+          time_zone: string
+          updated_at: string
+        }
+        Insert: {
+          accent_color?: string
+          celebrate_at: string
+          created_at?: string
+          creator_id?: string
+          decoration_emoji?: string
+          decorations?: Json
+          edit_token_hash?: string | null
+          extra_messages?: Json
+          final_message?: string
+          id?: string
+          language?: string
+          main_message?: string
+          media?: Json
+          music_enabled?: boolean
+          music_url?: string | null
+          nickname?: string | null
+          photos?: Json
+          recipient_name: string
+          surprise_media?: Json | null
+          surprise_message?: string
+          theme?: string
+          time_zone?: string
+          updated_at?: string
+        }
+        Update: {
+          accent_color?: string
+          celebrate_at?: string
+          created_at?: string
+          creator_id?: string
+          decoration_emoji?: string
+          decorations?: Json
+          edit_token_hash?: string | null
+          extra_messages?: Json
+          final_message?: string
+          id?: string
+          language?: string
+          main_message?: string
+          media?: Json
+          music_enabled?: boolean
+          music_url?: string | null
+          nickname?: string | null
+          photos?: Json
+          recipient_name?: string
+          surprise_media?: Json | null
+          surprise_message?: string
+          theme?: string
+          time_zone?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
