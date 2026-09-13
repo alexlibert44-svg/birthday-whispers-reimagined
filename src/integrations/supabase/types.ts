@@ -32,6 +32,7 @@ export type Database = {
           music_enabled: boolean
           music_url: string | null
           nickname: string | null
+          owner_hash: string | null
           photos: Json
           recipient_name: string
           surprise_media: Json | null
@@ -57,6 +58,7 @@ export type Database = {
           music_enabled?: boolean
           music_url?: string | null
           nickname?: string | null
+          owner_hash?: string | null
           photos?: Json
           recipient_name: string
           surprise_media?: Json | null
@@ -82,6 +84,7 @@ export type Database = {
           music_enabled?: boolean
           music_url?: string | null
           nickname?: string | null
+          owner_hash?: string | null
           photos?: Json
           recipient_name?: string
           surprise_media?: Json | null
