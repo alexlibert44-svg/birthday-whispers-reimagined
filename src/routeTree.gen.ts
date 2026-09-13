@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CreateRouteImport } from './routes/create'
+import { Route as MyGiftsRouteImport } from './routes/my-gifts'
 import { Route as BirthdayGiftIdRouteImport } from './routes/birthday.$giftId'
 import { Route as EditGiftIdRouteImport } from './routes/edit.$giftId'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const CreateRoute = CreateRouteImport.update({
   id: '/create',
   path: '/create',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyGiftsRoute = MyGiftsRouteImport.update({
+  id: '/my-gifts',
+  path: '/my-gifts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BirthdayGiftIdRoute = BirthdayGiftIdRouteImport.update({
@@ -38,12 +44,14 @@ const EditGiftIdRoute = EditGiftIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/create': typeof CreateRoute
+  '/my-gifts': typeof MyGiftsRoute
   '/birthday/$giftId': typeof BirthdayGiftIdRoute
   '/edit/$giftId': typeof EditGiftIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/create': typeof CreateRoute
+  '/my-gifts': typeof MyGiftsRoute
   '/birthday/$giftId': typeof BirthdayGiftIdRoute
   '/edit/$giftId': typeof EditGiftIdRoute
 }
@@ -51,20 +59,29 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/create': typeof CreateRoute
+  '/my-gifts': typeof MyGiftsRoute
   '/birthday/$giftId': typeof BirthdayGiftIdRoute
   '/edit/$giftId': typeof EditGiftIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/create' | '/birthday/$giftId' | '/edit/$giftId'
+  fullPaths:
+    '/' | '/create' | '/my-gifts' | '/birthday/$giftId' | '/edit/$giftId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/create' | '/birthday/$giftId' | '/edit/$giftId'
-  id: '__root__' | '/' | '/create' | '/birthday/$giftId' | '/edit/$giftId'
+  to: '/' | '/create' | '/my-gifts' | '/birthday/$giftId' | '/edit/$giftId'
+  id:
+    | '__root__'
+    | '/'
+    | '/create'
+    | '/my-gifts'
+    | '/birthday/$giftId'
+    | '/edit/$giftId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreateRoute: typeof CreateRoute
+  MyGiftsRoute: typeof MyGiftsRoute
   BirthdayGiftIdRoute: typeof BirthdayGiftIdRoute
   EditGiftIdRoute: typeof EditGiftIdRoute
 }
@@ -83,6 +100,13 @@ declare module '@tanstack/react-router' {
       path: '/create'
       fullPath: '/create'
       preLoaderRoute: typeof CreateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-gifts': {
+      id: '/my-gifts'
+      path: '/my-gifts'
+      fullPath: '/my-gifts'
+      preLoaderRoute: typeof MyGiftsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/birthday/$giftId': {
@@ -105,6 +129,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreateRoute: CreateRoute,
+  MyGiftsRoute: MyGiftsRoute,
   BirthdayGiftIdRoute: BirthdayGiftIdRoute,
   EditGiftIdRoute: EditGiftIdRoute,
 }

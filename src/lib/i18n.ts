@@ -140,6 +140,14 @@ const en = {
   notFound: "This gift link doesn't exist.",
   loadError: "This surprise couldn't be opened right now.",
   preview: "Preview",
+
+  // My gifts
+  myGifts: "My Gifts",
+  myGiftsSub: "Every gift you created, saved in the cloud.",
+  myGiftsEmpty: "You haven't created a gift yet.",
+  editGift: "Edit",
+  loadingTxt: "Loading…",
+  birthdayOn: "Birthday",
 };
 
 type Dict = typeof en;
@@ -265,6 +273,13 @@ const ar: Dict = {
   notFound: "هذا الرابط غير موجود.",
   loadError: "تعذر فتح هذه المفاجأة الآن.",
   preview: "معاينة",
+
+  myGifts: "هداياي",
+  myGiftsSub: "كل الهدايا التي أنشأتها، محفوظة في السحابة.",
+  myGiftsEmpty: "لم تنشئ أي هدية بعد.",
+  editGift: "تعديل",
+  loadingTxt: "جارٍ التحميل…",
+  birthdayOn: "عيد الميلاد",
 };
 
 const DICTS: Record<Lang, Dict> = { en, ar };
