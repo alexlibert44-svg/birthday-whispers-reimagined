@@ -21,20 +21,15 @@ export type Database = {
           created_at: string
           creator_id: string
           decoration_emoji: string
-          decorations: Json
-          edit_token_hash: string | null
           extra_messages: Json
           final_message: string
           id: string
-          language: string
           main_message: string
-          media: Json
           music_enabled: boolean
           music_url: string | null
           nickname: string | null
           photos: Json
           recipient_name: string
-          surprise_media: Json | null
           surprise_message: string
           theme: string
           time_zone: string
@@ -44,22 +39,17 @@ export type Database = {
           accent_color?: string
           celebrate_at: string
           created_at?: string
-          creator_id?: string
+          creator_id: string
           decoration_emoji?: string
-          decorations?: Json
-          edit_token_hash?: string | null
           extra_messages?: Json
           final_message?: string
           id?: string
-          language?: string
           main_message?: string
-          media?: Json
           music_enabled?: boolean
           music_url?: string | null
           nickname?: string | null
           photos?: Json
           recipient_name: string
-          surprise_media?: Json | null
           surprise_message?: string
           theme?: string
           time_zone?: string
@@ -71,20 +61,15 @@ export type Database = {
           created_at?: string
           creator_id?: string
           decoration_emoji?: string
-          decorations?: Json
-          edit_token_hash?: string | null
           extra_messages?: Json
           final_message?: string
           id?: string
-          language?: string
           main_message?: string
-          media?: Json
           music_enabled?: boolean
           music_url?: string | null
           nickname?: string | null
           photos?: Json
           recipient_name?: string
-          surprise_media?: Json | null
           surprise_message?: string
           theme?: string
           time_zone?: string
