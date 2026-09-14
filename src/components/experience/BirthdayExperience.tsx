@@ -289,7 +289,7 @@ export function BirthdayExperience({
       )}
 
       {/* ---------------- phases ---------------- */}
-      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-2xl flex-col items-center justify-center px-6 py-20 text-center">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-2xl flex-col items-center justify-center px-6 pt-24 pb-28 text-center">
         {phase === "intro" && (
           <div className="animate-rise-in">
             {has("giftbox") && (
