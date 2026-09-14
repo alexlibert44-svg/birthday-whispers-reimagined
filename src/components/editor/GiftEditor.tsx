@@ -19,6 +19,7 @@ import {
 import { dirOf, translator, type Lang } from "@/lib/i18n";
 import { UploadError, removeGiftFile, uploadFile } from "@/lib/media";
 import { createGift, updateGift } from "@/lib/gifts.functions";
+import { getOwnerKey } from "@/lib/owner";
 
 const DRAFT_KEY = "lumiere.draft.v1";
 
@@ -843,7 +844,6 @@ export function GiftEditor({
           <button
             type="button"
             onClick={() => {
-              console.log("PREVIEW CLICK");
               setPreviewSkip(true);
               setPreviewOpen(true);
             }}
