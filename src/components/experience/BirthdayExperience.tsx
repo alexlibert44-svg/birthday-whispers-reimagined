@@ -221,7 +221,7 @@ export function BirthdayExperience({
     <div
       dir={dir}
       lang={gift.language}
-      className="relative min-h-[100svh] overflow-hidden transition-[background] duration-1000"
+      className="relative min-h-[100svh] overflow-x-hidden transition-[background] duration-1000"
       style={styleVars}
     >
       {/* ambience */}
