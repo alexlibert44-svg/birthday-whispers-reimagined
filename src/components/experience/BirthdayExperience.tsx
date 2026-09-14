@@ -147,9 +147,57 @@ export function BirthdayExperience({
   const restart = () => {
     pauseAllVideos();
     setIndex(0);
+    setMsgIndex(0);
     setBoxOpen(false);
     setPhase("intro");
   };
+
+  /* ---------------- personal messages, one per screen ---------------- */
+  const messages = useMemo(
+    () => [gift.mainMessage, ...gift.extraMessages].filter((m) => m && m.trim()),
+    [gift.mainMessage, gift.extraMessages],
+  );
+
+  const afterMessages = useCallback(() => {
+    if (media.length) return "memories" as const;
+    if (gift.surpriseMessage || gift.surpriseMedia) return "surprise" as const;
+    return "final" as const;
+  }, [media.length, gift.surpriseMessage, gift.surpriseMedia]);
+
+  const goMessage = useCallback(
+    (delta: number) => {
+      const next = msgIndex + delta;
+      if (next < 0) return;
+      if (next >= messages.length) {
+        playTick();
+        setPhase(afterMessages());
+        return;
+      }
+      playTick();
+      setMsgIndex(next);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    [msgIndex, messages.length, afterMessages],
+  );
+
+  const touchX = useRef<number | null>(null);
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    touchX.current = e.touches[0]?.clientX ?? null;
+  }, []);
+  const onTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      const start = touchX.current;
+      touchX.current = null;
+      const end = e.changedTouches[0]?.clientX;
+      if (start == null || end == null) return;
+      const dx = end - start;
+      if (Math.abs(dx) < 50) return;
+      // Swiping left moves forward in LTR, backwards in RTL.
+      const forward = dir === "rtl" ? dx > 0 : dx < 0;
+      goMessage(forward ? 1 : -1);
+    },
+    [dir, goMessage],
+  );
 
   /* ---------------- shell ---------------- */
   const background = celebrating ? theme.celebration : theme.background;
