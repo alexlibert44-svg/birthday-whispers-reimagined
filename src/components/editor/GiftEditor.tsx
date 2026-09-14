@@ -265,18 +265,20 @@ export function GiftEditor({
       decorations: form.decorations,
     };
 
+    const ownerKey = getOwnerKey();
+
     try {
-      if (mode === "edit" && gift && token) {
-        await updateGift({ data: { ...payload, giftId: gift.id, token } });
+      // Editing always updates the same gift — it never creates a copy.
+      if (mode === "edit" && gift) {
+        await updateGift({
+          data: { ...payload, giftId: gift.id, ...(token ? { token } : {}), ownerKey },
+        });
         toast.success(t("giftUpdated"));
       } else {
-        const created = await createGift({ data: payload });
+        const created = await createGift({ data: { ...payload, ownerKey } });
         setResult(created);
         try {
           window.localStorage.removeItem(DRAFT_KEY);
-          const saved = JSON.parse(window.localStorage.getItem("lumiere.mygifts") ?? "[]");
-          saved.unshift({ ...created, name: payload.recipientName, at: Date.now() });
-          window.localStorage.setItem("lumiere.mygifts", JSON.stringify(saved.slice(0, 50)));
         } catch {
           /* ignore */
         }
