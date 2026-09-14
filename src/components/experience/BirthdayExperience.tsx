@@ -43,6 +43,7 @@ export function BirthdayExperience({
   const [left, setLeft] = useState(() => remaining(gift.celebrateAt));
   const [burst, setBurst] = useState(0);
   const [index, setIndex] = useState(0);
+  const [msgIndex, setMsgIndex] = useState(0);
   const [boxOpen, setBoxOpen] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [needsMusicTap, setNeedsMusicTap] = useState(false);
