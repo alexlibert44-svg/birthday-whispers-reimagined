@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+
 import { Clock, Gift, Sparkles as SparklesIcon } from "lucide-react";
 
 import { Balloons, FloatingMotes, Sparkles, Starfield } from "@/components/experience/Ambience";
