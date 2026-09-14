@@ -353,6 +353,7 @@ export function BirthdayExperience({
               type="button"
               onClick={() => {
                 setBurst((b) => b + 1);
+                setMsgIndex(0);
                 setPhase("message");
               }}
               className={btn + " mt-10"}
