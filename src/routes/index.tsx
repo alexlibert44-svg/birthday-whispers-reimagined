@@ -55,8 +55,14 @@ function Landing() {
       <Sparkles count={14} colors={[theme.defaultAccent, "#ffffff"]} />
 
       <div className="relative z-10 mx-auto max-w-4xl px-6 py-8">
-        <header className="flex items-center justify-between">
+        <header className="flex flex-wrap items-center justify-between gap-3">
           <span className="text-xs tracking-[0.3em] text-white/55 uppercase">{t("brand")}</span>
+          <Link
+            to="/my-gifts"
+            className="rounded-full border border-white/15 px-4 py-1.5 text-xs text-white/70 transition-colors hover:border-white/45"
+          >
+            {t("myGifts")}
+          </Link>
           <div className="flex gap-1 rounded-full border border-white/12 p-1">
             {LANGS.map((l) => (
               <button
