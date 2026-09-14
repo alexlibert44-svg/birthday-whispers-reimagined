@@ -96,6 +96,22 @@ function stateFromGift(gift: GiftConfig): FormState {
   };
 }
 
+/**
+ * Defined at module scope on purpose: declaring this inside GiftEditor made
+ * React unmount and remount every field on each keystroke, which closed the
+ * mobile keyboard after a single character.
+ */
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="surface-card p-5 sm:p-6">
+      <h2 className="text-display text-lg text-white">{title}</h2>
+      <div className="mt-4 flex flex-col gap-4">{children}</div>
+    </section>
+  );
+}
+
+
+
 export function GiftEditor({
   mode,
   gift,
@@ -358,13 +374,6 @@ export function GiftEditor({
   }
 
   /* ---------- editor form ---------- */
-  const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <section className="surface-card p-5 sm:p-6">
-      <h2 className="text-display text-lg text-white">{title}</h2>
-      <div className="mt-4 flex flex-col gap-4">{children}</div>
-    </section>
-  );
-
   return (
     <div dir={dir} className="flex flex-col gap-5">
       <Section title={t("secRecipient")}>
