@@ -43,6 +43,7 @@ export function BirthdayExperience({
   const [left, setLeft] = useState(() => remaining(gift.celebrateAt));
   const [burst, setBurst] = useState(0);
   const [index, setIndex] = useState(0);
+  const [msgIndex, setMsgIndex] = useState(0);
   const [boxOpen, setBoxOpen] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const [needsMusicTap, setNeedsMusicTap] = useState(false);
@@ -147,9 +148,57 @@ export function BirthdayExperience({
   const restart = () => {
     pauseAllVideos();
     setIndex(0);
+    setMsgIndex(0);
     setBoxOpen(false);
     setPhase("intro");
   };
+
+  /* ---------------- personal messages, one per screen ---------------- */
+  const messages = useMemo(
+    () => [gift.mainMessage, ...gift.extraMessages].filter((m) => m && m.trim()),
+    [gift.mainMessage, gift.extraMessages],
+  );
+
+  const afterMessages = useCallback(() => {
+    if (media.length) return "memories" as const;
+    if (gift.surpriseMessage || gift.surpriseMedia) return "surprise" as const;
+    return "final" as const;
+  }, [media.length, gift.surpriseMessage, gift.surpriseMedia]);
+
+  const goMessage = useCallback(
+    (delta: number) => {
+      const next = msgIndex + delta;
+      if (next < 0) return;
+      if (next >= messages.length) {
+        playTick();
+        setPhase(afterMessages());
+        return;
+      }
+      playTick();
+      setMsgIndex(next);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    [msgIndex, messages.length, afterMessages],
+  );
+
+  const touchX = useRef<number | null>(null);
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    touchX.current = e.touches[0]?.clientX ?? null;
+  }, []);
+  const onTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      const start = touchX.current;
+      touchX.current = null;
+      const end = e.changedTouches[0]?.clientX;
+      if (start == null || end == null) return;
+      const dx = end - start;
+      if (Math.abs(dx) < 50) return;
+      // Swiping left moves forward in LTR, backwards in RTL.
+      const forward = dir === "rtl" ? dx > 0 : dx < 0;
+      goMessage(forward ? 1 : -1);
+    },
+    [dir, goMessage],
+  );
 
   /* ---------------- shell ---------------- */
   const background = celebrating ? theme.celebration : theme.background;
@@ -172,7 +221,7 @@ export function BirthdayExperience({
     <div
       dir={dir}
       lang={gift.language}
-      className="relative min-h-[100svh] overflow-hidden transition-[background] duration-1000"
+      className="relative min-h-[100svh] overflow-x-hidden transition-[background] duration-1000"
       style={styleVars}
     >
       {/* ambience */}
@@ -240,7 +289,7 @@ export function BirthdayExperience({
       )}
 
       {/* ---------------- phases ---------------- */}
-      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-2xl flex-col items-center justify-center px-6 py-20 text-center">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-2xl flex-col items-center justify-center px-6 pt-24 pb-28 text-center">
         {phase === "intro" && (
           <div className="animate-rise-in">
             {has("giftbox") && (
@@ -304,6 +353,7 @@ export function BirthdayExperience({
               type="button"
               onClick={() => {
                 setBurst((b) => b + 1);
+                setMsgIndex(0);
                 setPhase("message");
               }}
               className={btn + " mt-10"}
@@ -315,29 +365,66 @@ export function BirthdayExperience({
         )}
 
         {phase === "message" && (
-          <div className="animate-rise-in w-full">
+          <div
+            key={msgIndex}
+            className="animate-rise-in w-full"
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+          >
             <p className="text-xs tracking-[0.3em] text-white/45 uppercase">{t("dear")}</p>
             <h2 className="text-display mt-2 text-3xl text-white sm:text-4xl">
               {gift.recipientName}
             </h2>
-            <p className="mt-7 text-base leading-relaxed whitespace-pre-line text-white/85 sm:text-lg">
-              {gift.mainMessage}
-            </p>
-            {gift.extraMessages.map((m, i) => (
-              <p
-                key={i}
-                className="mt-5 text-sm leading-relaxed whitespace-pre-line text-white/60 italic"
-              >
-                {m}
-              </p>
-            ))}
+
+            {/* one message per screen, inside its own frame */}
+            <div className="surface-card mt-6 w-full overflow-hidden p-5 sm:p-7">
+              <div className="max-h-[48svh] overflow-x-hidden overflow-y-auto overscroll-contain">
+                <p
+                  className={`text-base leading-relaxed break-words whitespace-pre-line sm:text-lg ${
+                    msgIndex === 0 ? "text-white/85" : "text-white/70 italic"
+                  }`}
+                >
+                  {messages[msgIndex]}
+                </p>
+              </div>
+            </div>
+
+            {messages.length > 1 && (
+              <div className="mt-5 flex items-center justify-center gap-4" dir="ltr">
+                <button
+                  type="button"
+                  onClick={() => goMessage(-1)}
+                  disabled={msgIndex === 0}
+                  aria-label={t("previous")}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/70 disabled:opacity-30"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <span className="text-xs tracking-[0.2em] text-white/55">
+                  {msgIndex + 1} / {messages.length}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => goMessage(1)}
+                  aria-label={t("next")}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/70"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+
             <button
               type="button"
-              onClick={() => setPhase(media.length ? "memories" : gift.surpriseMessage || gift.surpriseMedia ? "surprise" : "final")}
-              className={btn + " mt-9"}
+              onClick={() => goMessage(1)}
+              className={btn + " mt-7"}
               style={{ background: accent }}
             >
-              {media.length ? t("seeMemories") : t("continueBtn")}
+              {msgIndex < messages.length - 1
+                ? t("next")
+                : media.length
+                  ? t("seeMemories")
+                  : t("continueBtn")}
             </button>
           </div>
         )}

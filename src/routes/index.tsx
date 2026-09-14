@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+
 import { Clock, Gift, Sparkles as SparklesIcon } from "lucide-react";
 
 import { Balloons, FloatingMotes, Sparkles, Starfield } from "@/components/experience/Ambience";
@@ -29,21 +29,9 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-type SavedGift = { id: string; token: string; name: string; at: number };
-
 function Landing() {
   const { lang, setLang, t, dir } = useAppLanguage();
   const theme = THEMES.midnight;
-  const [mine, setMine] = useState<SavedGift[]>([]);
-
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem("lumiere.mygifts");
-      if (raw) setMine(JSON.parse(raw));
-    } catch {
-      /* ignore */
-    }
-  }, []);
 
   const features = [
     { icon: Clock, title: t("f1Title"), body: t("f1Body") },
@@ -67,8 +55,14 @@ function Landing() {
       <Sparkles count={14} colors={[theme.defaultAccent, "#ffffff"]} />
 
       <div className="relative z-10 mx-auto max-w-4xl px-6 py-8">
-        <header className="flex items-center justify-between">
+        <header className="flex flex-wrap items-center justify-between gap-3">
           <span className="text-xs tracking-[0.3em] text-white/55 uppercase">{t("brand")}</span>
+          <Link
+            to="/my-gifts"
+            className="rounded-full border border-white/15 px-4 py-1.5 text-xs text-white/70 transition-colors hover:border-white/45"
+          >
+            {t("myGifts")}
+          </Link>
           <div className="flex gap-1 rounded-full border border-white/12 p-1">
             {LANGS.map((l) => (
               <button
@@ -113,38 +107,6 @@ function Landing() {
             ))}
           </div>
 
-          {mine.length > 0 && (
-            <div className="mt-14 w-full text-start">
-              <p className="text-xs tracking-[0.2em] text-white/40 uppercase">{t("privateLink")}</p>
-              <div className="mt-3 flex flex-col gap-2">
-                {mine.map((g) => (
-                  <div
-                    key={g.id}
-                    className="surface-card flex flex-wrap items-center justify-between gap-3 px-5 py-4"
-                  >
-                    <span className="text-sm text-white/80">🎁 {g.name}</span>
-                    <div className="flex gap-2 text-xs">
-                      <Link
-                        to="/birthday/$giftId"
-                        params={{ giftId: g.id }}
-                        className="rounded-full border border-white/15 px-4 py-2 text-white/70 hover:border-white/40"
-                      >
-                        {t("openGift")}
-                      </Link>
-                      <Link
-                        to="/edit/$giftId"
-                        params={{ giftId: g.id }}
-                        search={{ token: g.token }}
-                        className="rounded-full border border-white/15 px-4 py-2 text-white/70 hover:border-white/40"
-                      >
-                        {t("saveChanges")}
-                      </Link>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </main>
       </div>
     </div>

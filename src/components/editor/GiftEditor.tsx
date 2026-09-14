@@ -19,6 +19,7 @@ import {
 import { dirOf, translator, type Lang } from "@/lib/i18n";
 import { UploadError, removeGiftFile, uploadFile } from "@/lib/media";
 import { createGift, updateGift } from "@/lib/gifts.functions";
+import { getOwnerKey } from "@/lib/owner";
 
 const DRAFT_KEY = "lumiere.draft.v1";
 
@@ -95,6 +96,22 @@ function stateFromGift(gift: GiftConfig): FormState {
     decorations: gift.decorations,
   };
 }
+
+/**
+ * Defined at module scope on purpose: declaring this inside GiftEditor made
+ * React unmount and remount every field on each keystroke, which closed the
+ * mobile keyboard after a single character.
+ */
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="surface-card p-5 sm:p-6">
+      <h2 className="text-display text-lg text-white">{title}</h2>
+      <div className="mt-4 flex flex-col gap-4">{children}</div>
+    </section>
+  );
+}
+
+
 
 export function GiftEditor({
   mode,
@@ -249,18 +266,20 @@ export function GiftEditor({
       decorations: form.decorations,
     };
 
+    const ownerKey = getOwnerKey();
+
     try {
-      if (mode === "edit" && gift && token) {
-        await updateGift({ data: { ...payload, giftId: gift.id, token } });
+      // Editing always updates the same gift — it never creates a copy.
+      if (mode === "edit" && gift) {
+        await updateGift({
+          data: { ...payload, giftId: gift.id, ...(token ? { token } : {}), ownerKey },
+        });
         toast.success(t("giftUpdated"));
       } else {
-        const created = await createGift({ data: payload });
+        const created = await createGift({ data: { ...payload, ownerKey } });
         setResult(created);
         try {
           window.localStorage.removeItem(DRAFT_KEY);
-          const saved = JSON.parse(window.localStorage.getItem("lumiere.mygifts") ?? "[]");
-          saved.unshift({ ...created, name: payload.recipientName, at: Date.now() });
-          window.localStorage.setItem("lumiere.mygifts", JSON.stringify(saved.slice(0, 50)));
         } catch {
           /* ignore */
         }
@@ -358,13 +377,6 @@ export function GiftEditor({
   }
 
   /* ---------- editor form ---------- */
-  const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <section className="surface-card p-5 sm:p-6">
-      <h2 className="text-display text-lg text-white">{title}</h2>
-      <div className="mt-4 flex flex-col gap-4">{children}</div>
-    </section>
-  );
-
   return (
     <div dir={dir} className="flex flex-col gap-5">
       <Section title={t("secRecipient")}>
@@ -832,7 +844,6 @@ export function GiftEditor({
           <button
             type="button"
             onClick={() => {
-              console.log("PREVIEW CLICK");
               setPreviewSkip(true);
               setPreviewOpen(true);
             }}
