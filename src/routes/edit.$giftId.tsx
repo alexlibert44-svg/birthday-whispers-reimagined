@@ -70,9 +70,8 @@ function EditPage() {
         <h1 className="text-display mt-5 text-3xl text-white sm:text-4xl">{t("editTitle")}</h1>
 
         <div className="mt-8">
-          {!token && <p className="text-sm text-white/50">{t("errLoad")}</p>}
-          {token && isLoading && <p className="text-sm text-white/45">…</p>}
-          {token && !isLoading && (isError || !data) && (
+          {(!ready || isLoading) && <p className="text-sm text-white/45">{t("loadingTxt")}</p>}
+          {ready && !isLoading && (isError || !data) && (
             <p className="text-sm text-white/50">{t("errLoad")}</p>
           )}
           {data && <GiftEditor mode="edit" gift={data} token={token} uiLang={lang} />}
