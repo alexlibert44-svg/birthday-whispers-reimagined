@@ -29,21 +29,9 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-type SavedGift = { id: string; token: string; name: string; at: number };
-
 function Landing() {
   const { lang, setLang, t, dir } = useAppLanguage();
   const theme = THEMES.midnight;
-  const [mine, setMine] = useState<SavedGift[]>([]);
-
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem("lumiere.mygifts");
-      if (raw) setMine(JSON.parse(raw));
-    } catch {
-      /* ignore */
-    }
-  }, []);
 
   const features = [
     { icon: Clock, title: t("f1Title"), body: t("f1Body") },
