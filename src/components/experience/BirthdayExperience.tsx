@@ -315,29 +315,66 @@ export function BirthdayExperience({
         )}
 
         {phase === "message" && (
-          <div className="animate-rise-in w-full">
+          <div
+            key={msgIndex}
+            className="animate-rise-in w-full"
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+          >
             <p className="text-xs tracking-[0.3em] text-white/45 uppercase">{t("dear")}</p>
             <h2 className="text-display mt-2 text-3xl text-white sm:text-4xl">
               {gift.recipientName}
             </h2>
-            <p className="mt-7 text-base leading-relaxed whitespace-pre-line text-white/85 sm:text-lg">
-              {gift.mainMessage}
-            </p>
-            {gift.extraMessages.map((m, i) => (
-              <p
-                key={i}
-                className="mt-5 text-sm leading-relaxed whitespace-pre-line text-white/60 italic"
-              >
-                {m}
-              </p>
-            ))}
+
+            {/* one message per screen, inside its own frame */}
+            <div className="surface-card mt-6 w-full overflow-hidden p-5 sm:p-7">
+              <div className="max-h-[48svh] overflow-x-hidden overflow-y-auto overscroll-contain">
+                <p
+                  className={`text-base leading-relaxed break-words whitespace-pre-line sm:text-lg ${
+                    msgIndex === 0 ? "text-white/85" : "text-white/70 italic"
+                  }`}
+                >
+                  {messages[msgIndex]}
+                </p>
+              </div>
+            </div>
+
+            {messages.length > 1 && (
+              <div className="mt-5 flex items-center justify-center gap-4" dir="ltr">
+                <button
+                  type="button"
+                  onClick={() => goMessage(-1)}
+                  disabled={msgIndex === 0}
+                  aria-label={t("previous")}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/70 disabled:opacity-30"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <span className="text-xs tracking-[0.2em] text-white/55">
+                  {msgIndex + 1} / {messages.length}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => goMessage(1)}
+                  aria-label={t("next")}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/70"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+
             <button
               type="button"
-              onClick={() => setPhase(media.length ? "memories" : gift.surpriseMessage || gift.surpriseMedia ? "surprise" : "final")}
-              className={btn + " mt-9"}
+              onClick={() => goMessage(1)}
+              className={btn + " mt-7"}
               style={{ background: accent }}
             >
-              {media.length ? t("seeMemories") : t("continueBtn")}
+              {msgIndex < messages.length - 1
+                ? t("next")
+                : media.length
+                  ? t("seeMemories")
+                  : t("continueBtn")}
             </button>
           </div>
         )}
