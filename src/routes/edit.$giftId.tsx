@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 import { GiftEditor } from "@/components/editor/GiftEditor";
 import { getGiftForEdit } from "@/lib/gifts.functions";
+import { getOwnerKey } from "@/lib/owner";
 import { LANGS, useAppLanguage } from "@/lib/i18n";
 
 type Search = { token?: string | undefined };
@@ -27,12 +29,19 @@ function EditPage() {
   const { giftId } = Route.useParams();
   const { token } = Route.useSearch();
   const { lang, setLang, t, dir } = useAppLanguage();
+  const [ownerKey, setOwnerKey] = useState("");
+
+  useEffect(() => {
+    setOwnerKey(getOwnerKey());
+  }, []);
+
+  const ready = !!token || !!ownerKey;
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["gift-edit", giftId, token],
-    enabled: !!token,
+    queryKey: ["gift-edit", giftId, token, ownerKey],
+    enabled: ready,
     retry: false,
-    queryFn: () => getGiftForEdit({ data: { giftId, token: token! } }),
+    queryFn: () => getGiftForEdit({ data: { giftId, ...(token ? { token } : {}), ownerKey } }),
   });
 
   return (
