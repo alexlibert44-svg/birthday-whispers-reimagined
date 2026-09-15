@@ -377,11 +377,11 @@ export function BirthdayExperience({
             </h2>
 
             {/* one message per screen, inside its own frame */}
-            <div className="surface-card mt-6 w-full overflow-hidden p-5 sm:p-7">
+            <div className="gift-message-frame mt-6 w-full overflow-hidden p-5 sm:p-7">
               <div className="max-h-[48svh] overflow-x-hidden overflow-y-auto overscroll-contain">
                 <p
-                  className={`text-base leading-relaxed break-words whitespace-pre-line sm:text-lg ${
-                    msgIndex === 0 ? "text-white/85" : "text-white/70 italic"
+                  className={`text-base leading-relaxed break-words whitespace-pre-line text-white/95 sm:text-lg ${
+                    msgIndex === 0 ? "" : "italic"
                   }`}
                 >
                   {messages[msgIndex]}
@@ -432,7 +432,7 @@ export function BirthdayExperience({
         {phase === "memories" && current && (
           <div className="w-full">
             <p className="text-xs tracking-[0.3em] text-white/45 uppercase">{t("memories")}</p>
-            <div className="surface-card mt-5 overflow-hidden">
+            <div className="mt-5 flex w-full justify-center">
               {current.type === "video" ? (
                 // eslint-disable-next-line jsx-a11y/media-has-caption
                 <video
@@ -444,7 +444,7 @@ export function BirthdayExperience({
                   controls
                   playsInline
                   preload="metadata"
-                  className="max-h-[62svh] w-full bg-black object-contain"
+                  className="gift-media-frame max-h-[62svh] max-w-full object-contain p-1.5"
                 />
               ) : (
                 <img
@@ -452,7 +452,7 @@ export function BirthdayExperience({
                   src={current.url}
                   alt={current.caption || `${t("memories")} ${index + 1}`}
                   loading="lazy"
-                  className="max-h-[62svh] w-full object-contain"
+                  className="gift-media-frame h-auto max-h-[62svh] w-auto max-w-full object-contain p-1.5"
                 />
               )}
             </div>
@@ -537,7 +537,7 @@ export function BirthdayExperience({
                   </p>
                 )}
                 {gift.surpriseMedia && (
-                  <div className="surface-card mt-5 overflow-hidden">
+                  <div className="mt-5 flex w-full justify-center">
                     {gift.surpriseMedia.type === "video" ? (
                       // eslint-disable-next-line jsx-a11y/media-has-caption
                       <video
@@ -545,13 +545,13 @@ export function BirthdayExperience({
                         controls
                         playsInline
                         preload="metadata"
-                        className="max-h-[55svh] w-full bg-black object-contain"
+                        className="gift-media-frame max-h-[55svh] max-w-full object-contain p-1.5"
                       />
                     ) : (
                       <img
                         src={gift.surpriseMedia.url}
                         alt={gift.surpriseMedia.caption || t("surpriseTitle")}
-                        className="max-h-[55svh] w-full object-contain"
+                        className="gift-media-frame h-auto max-h-[55svh] w-auto max-w-full object-contain p-1.5"
                       />
                     )}
                   </div>
