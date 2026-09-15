@@ -380,7 +380,7 @@ export function BirthdayExperience({
             <div className="gift-message-frame mt-6 w-full overflow-hidden p-5 sm:p-7">
               <div className="max-h-[48svh] overflow-x-hidden overflow-y-auto overscroll-contain">
                 <p
-                  className={`text-base leading-relaxed break-words whitespace-pre-line text-white/95 sm:text-lg ${
+                  className={`text-base leading-relaxed break-words whitespace-pre-line text-white sm:text-lg ${
                     msgIndex === 0 ? "" : "italic"
                   }`}
                 >
