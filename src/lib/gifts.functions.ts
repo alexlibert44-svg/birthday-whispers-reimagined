@@ -38,7 +38,7 @@ async function sha256(value: string): Promise<string> {
 }
 
 const PUBLIC_COLUMNS =
-  "id,recipient_name,nickname,celebrate_at,time_zone,main_message,extra_messages,final_message,surprise_message,photos,music_url,music_enabled,theme,accent_color,decoration_emoji,language,media,surprise_media,decorations,created_at,updated_at";
+  "id,recipient_name,nickname,celebrate_at,time_zone,main_message,extra_messages,final_message,surprise_message,photos,music_url,music_enabled,theme,accent_color,message_frame_style,message_frame_color,decoration_emoji,language,media,surprise_media,decorations,created_at,updated_at";
 
 export type GiftSummary = {
   id: string;
@@ -63,6 +63,8 @@ type GiftInput = {
   musicEnabled: boolean;
   theme: string;
   accentColor: string;
+  messageFrameStyle: string;
+  messageFrameColor: string | null;
   decorations: string[];
 };
 
@@ -84,6 +86,8 @@ function toRow(input: GiftInput) {
     music_enabled: input.musicEnabled && !!input.musicUrl,
     theme: input.theme,
     accent_color: input.accentColor,
+    message_frame_style: input.messageFrameStyle,
+    message_frame_color: input.messageFrameColor,
     decorations: input.decorations,
   };
 }

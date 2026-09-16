@@ -25,6 +25,8 @@ export type GiftConfig = {
   musicEnabled: boolean;
   theme: ThemeKey;
   accentColor: string;
+  messageFrameStyle: MessageFrameStyle;
+  messageFrameColor: string | null;
   decorations: DecorationKey[];
 };
 
@@ -108,6 +110,48 @@ export const ACCENTS = [
   { label: "Purple", labelAr: "بنفسجي", value: "#c3a7ff" },
 ];
 
+export type MessageFrameStyle =
+  | "cinematic"
+  | "royal"
+  | "vintage"
+  | "polaroid"
+  | "film"
+  | "glass"
+  | "floral"
+  | "scrapbook"
+  | "romantic"
+  | "minimal"
+  | "arched"
+  | "glow";
+
+export const MESSAGE_FRAMES: {
+  key: MessageFrameStyle;
+  label: string;
+  labelAr: string;
+}[] = [
+  { key: "cinematic", label: "Cinematic Luxury", labelAr: "فخامة سينمائية" },
+  { key: "royal", label: "Classic Royal", labelAr: "ملكي كلاسيكي" },
+  { key: "vintage", label: "Vintage Letter", labelAr: "رسالة عتيقة" },
+  { key: "polaroid", label: "Polaroid", labelAr: "بولارويد" },
+  { key: "film", label: "Film Strip", labelAr: "شريط سينمائي" },
+  { key: "glass", label: "Elegant Glass", labelAr: "زجاج أنيق" },
+  { key: "floral", label: "Soft Floral", labelAr: "زهور ناعمة" },
+  { key: "scrapbook", label: "Memory Scrapbook", labelAr: "ألبوم ذكريات" },
+  { key: "romantic", label: "Romantic", labelAr: "رومانسي" },
+  { key: "minimal", label: "Minimal Luxury", labelAr: "فخامة بسيطة" },
+  { key: "arched", label: "Arched", labelAr: "إطار مقوس" },
+  { key: "glow", label: "Soft Glow", labelAr: "توهج ناعم" },
+];
+
+export const MESSAGE_FRAME_COLORS = [
+  { label: "Champagne", labelAr: "شمبانيا", value: "#d8b56d" },
+  { label: "Rose", labelAr: "وردي", value: "#d47b93" },
+  { label: "Amethyst", labelAr: "جمشت", value: "#9b83d7" },
+  { label: "Sapphire", labelAr: "ياقوت أزرق", value: "#5f91c9" },
+  { label: "Emerald", labelAr: "زمرد", value: "#5f9f8b" },
+  { label: "Pearl", labelAr: "لؤلؤي", value: "#c9c5d2" },
+];
+
 export type DecorationKey =
   | "balloons"
   | "confetti"
@@ -167,6 +211,10 @@ export function rowToGift(row: any): GiftConfig {
     musicEnabled: !!row.music_enabled,
     theme: (THEMES[row.theme as ThemeKey] ? row.theme : "midnight") as ThemeKey,
     accentColor: row.accent_color ?? "#f0c473",
+    messageFrameStyle: MESSAGE_FRAMES.some((frame) => frame.key === row.message_frame_style)
+      ? (row.message_frame_style as MessageFrameStyle)
+      : "cinematic",
+    messageFrameColor: typeof row.message_frame_color === "string" ? row.message_frame_color : null,
     decorations: Array.isArray(row.decorations) && row.decorations.length
       ? (row.decorations as DecorationKey[])
       : DEFAULT_DECORATIONS,
