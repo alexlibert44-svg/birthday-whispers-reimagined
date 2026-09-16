@@ -37,6 +37,7 @@ export function BirthdayExperience({
   const dir = dirOf(gift.language);
   const theme = THEMES[gift.theme] ?? THEMES.midnight;
   const accent = gift.accentColor || theme.defaultAccent;
+  const frameColor = gift.messageFrameColor || accent;
   const has = (key: string) => gift.decorations.includes(key as never);
 
   const [phase, setPhase] = useState<Phase>("intro");
@@ -208,8 +209,9 @@ export function BirthdayExperience({
         background,
         ["--gift-accent" as string]: accent,
         ["--gift-glow" as string]: theme.glow,
+        ["--message-frame-color" as string]: frameColor,
       }) as React.CSSProperties,
-    [background, accent, theme.glow],
+    [background, accent, frameColor, theme.glow],
   );
 
   const btn =
@@ -377,7 +379,9 @@ export function BirthdayExperience({
             </h2>
 
             {/* one message per screen, inside its own frame */}
-            <div className="gift-message-frame mt-6 w-full overflow-hidden p-5 sm:p-7">
+            <div
+              className={`gift-message-frame message-frame--${gift.messageFrameStyle} mt-6 w-full overflow-hidden p-5 sm:p-7`}
+            >
               <div className="max-h-[48svh] overflow-x-hidden overflow-y-auto overscroll-contain">
                 <p
                   className={`text-base leading-relaxed break-words whitespace-pre-line text-white sm:text-lg ${

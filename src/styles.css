@@ -138,16 +138,116 @@
 }
 
 @utility gift-message-frame {
+  position: relative;
+  isolation: isolate;
+  --frame-color: var(--message-frame-color, var(--gift-accent, var(--gold)));
   background: linear-gradient(
     160deg,
-    color-mix(in oklch, var(--gift-accent, var(--gold)) 55%, var(--background) 45%),
-    color-mix(in oklch, var(--gift-accent, var(--gold)) 30%, var(--background) 70%)
+    color-mix(in oklch, var(--frame-color) 55%, var(--background) 45%),
+    color-mix(in oklch, var(--frame-color) 30%, var(--background) 70%)
   );
-  border: 1px solid color-mix(in oklch, var(--gift-accent, var(--gold)) 72%, transparent);
+  border: 1px solid color-mix(in oklch, var(--frame-color) 72%, transparent);
   border-radius: var(--radius-xl);
   box-shadow:
     inset 0 1px 1px color-mix(in oklch, white 30%, transparent),
-    0 22px 64px -30px color-mix(in oklch, var(--gift-accent, var(--gold)) 75%, black 25%);
+    0 22px 64px -30px color-mix(in oklch, var(--frame-color) 75%, black 25%);
+}
+
+.gift-message-frame::before,
+.gift-message-frame::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+}
+
+.message-frame--cinematic::before {
+  inset: 6px;
+  border: 1px solid color-mix(in oklch, var(--frame-color) 62%, white 18%);
+  border-radius: calc(var(--radius-xl) - 5px);
+}
+
+.message-frame--royal {
+  border-width: 2px;
+  background: linear-gradient(145deg, color-mix(in oklch, var(--frame-color) 42%, var(--background)), var(--background));
+  box-shadow: inset 0 0 0 4px var(--background), inset 0 0 0 5px color-mix(in oklch, var(--frame-color) 72%, transparent), 0 20px 55px -30px var(--frame-color);
+}
+.message-frame--royal::before {
+  inset: 10px;
+  border-block: 1px solid color-mix(in oklch, var(--frame-color) 65%, transparent);
+}
+
+.message-frame--vintage {
+  background: linear-gradient(135deg, color-mix(in oklch, var(--frame-color) 34%, var(--background)), color-mix(in oklch, var(--frame-color) 18%, var(--card)));
+  border-style: double;
+  border-width: 4px;
+  box-shadow: inset 0 0 28px color-mix(in oklch, var(--frame-color) 22%, transparent), 0 18px 48px -32px var(--frame-color);
+}
+.message-frame--vintage::before { inset: 9px; border: 1px dashed color-mix(in oklch, var(--frame-color) 55%, transparent); border-radius: 8px; }
+
+.message-frame--polaroid {
+  border: 8px solid color-mix(in oklch, var(--frame-color) 18%, white 82%);
+  border-bottom-width: 18px;
+  border-radius: 4px;
+  background: color-mix(in oklch, var(--frame-color) 26%, var(--background));
+  box-shadow: 0 18px 42px -24px black;
+}
+
+.message-frame--film {
+  border-width: 0 14px;
+  border-style: solid;
+  border-color: color-mix(in oklch, var(--frame-color) 38%, black);
+  border-radius: 4px;
+  background: linear-gradient(160deg, color-mix(in oklch, var(--frame-color) 32%, var(--background)), var(--background));
+}
+.message-frame--film::before { inset: 5px -10px; background: repeating-linear-gradient(to bottom, transparent 0 8px, color-mix(in oklch, white 76%, var(--frame-color)) 8px 13px, transparent 13px 21px); opacity: .72; }
+
+.message-frame--glass {
+  background: linear-gradient(135deg, color-mix(in oklch, var(--frame-color) 23%, transparent), color-mix(in oklch, var(--background) 72%, transparent));
+  border-color: color-mix(in oklch, white 42%, var(--frame-color));
+  box-shadow: inset 0 1px 0 color-mix(in oklch, white 45%, transparent), 0 24px 65px -34px var(--frame-color);
+  backdrop-filter: blur(18px) saturate(125%);
+}
+
+.message-frame--floral {
+  background: radial-gradient(circle at 4% 8%, color-mix(in oklch, var(--frame-color) 72%, transparent) 0 3px, transparent 4px), radial-gradient(circle at 96% 92%, color-mix(in oklch, var(--frame-color) 72%, transparent) 0 3px, transparent 4px), linear-gradient(150deg, color-mix(in oklch, var(--frame-color) 38%, var(--background)), var(--background));
+  border-radius: 26px 8px 26px 8px;
+}
+.message-frame--floral::before { inset: 7px; border: 1px solid color-mix(in oklch, var(--frame-color) 50%, transparent); border-radius: 20px 5px 20px 5px; }
+
+.message-frame--scrapbook {
+  border: 2px dashed color-mix(in oklch, var(--frame-color) 75%, white 10%);
+  border-radius: 5px;
+  background: linear-gradient(115deg, color-mix(in oklch, var(--frame-color) 31%, var(--background)), color-mix(in oklch, var(--frame-color) 16%, var(--card)));
+  box-shadow: 5px 6px 0 color-mix(in oklch, var(--frame-color) 22%, transparent);
+}
+.message-frame--scrapbook::before { width: 54px; height: 14px; top: -8px; left: 50%; transform: translateX(-50%) rotate(-2deg); background: color-mix(in oklch, var(--frame-color) 42%, white 32%); opacity: .72; }
+
+.message-frame--romantic {
+  border: 1px solid color-mix(in oklch, var(--frame-color) 75%, white 10%);
+  border-radius: 30px 30px 8px 8px;
+  background: radial-gradient(circle at 50% 0%, color-mix(in oklch, var(--frame-color) 48%, transparent), transparent 42%), linear-gradient(180deg, color-mix(in oklch, var(--frame-color) 28%, var(--background)), var(--background));
+}
+.message-frame--romantic::before { inset: 7px; border: 1px solid color-mix(in oklch, var(--frame-color) 38%, transparent); border-radius: 24px 24px 5px 5px; }
+
+.message-frame--minimal {
+  border: 0;
+  border-inline-start: 3px solid var(--frame-color);
+  border-radius: 2px;
+  background: color-mix(in oklch, var(--frame-color) 14%, var(--background));
+  box-shadow: none;
+}
+
+.message-frame--arched {
+  border-radius: 50% 50% 10px 10px / 34px 34px 10px 10px;
+  background: linear-gradient(180deg, color-mix(in oklch, var(--frame-color) 42%, var(--background)), var(--background));
+  box-shadow: inset 0 0 0 5px color-mix(in oklch, var(--frame-color) 12%, transparent), 0 20px 52px -30px var(--frame-color);
+}
+
+.message-frame--glow {
+  border-color: color-mix(in oklch, var(--frame-color) 42%, transparent);
+  background: radial-gradient(circle at 50% 20%, color-mix(in oklch, var(--frame-color) 44%, var(--background)), var(--background) 72%);
+  box-shadow: 0 0 18px color-mix(in oklch, var(--frame-color) 42%, transparent), 0 0 54px color-mix(in oklch, var(--frame-color) 24%, transparent), inset 0 0 24px color-mix(in oklch, var(--frame-color) 22%, transparent);
 }
 
 @utility gift-media-frame {

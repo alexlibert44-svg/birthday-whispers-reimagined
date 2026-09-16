@@ -33,6 +33,7 @@ const en = {
   secRecipient: "Recipient",
   secWhen: "Birthday",
   secMessages: "Messages",
+  secMessageFrames: "Message Frames",
   secMedia: "Photos & Videos",
   secMusic: "Birthday Music",
   secSurprise: "Hidden Surprise",
@@ -77,6 +78,9 @@ const en = {
   // Appearance
   theme: "Theme",
   accent: "Accent colour",
+  frameDesign: "Frame design",
+  frameColor: "Frame colour",
+  framePreviewMessage: "Your message will appear here",
   decorations: "Decorations",
   decorationsHint: "Real animated decorations on the birthday page.",
 
@@ -172,6 +176,7 @@ const ar: Dict = {
   secRecipient: "صاحب العيد",
   secWhen: "موعد عيد الميلاد",
   secMessages: "الرسائل",
+  secMessageFrames: "إطارات الرسائل",
   secMedia: "الصور والفيديوهات",
   secMusic: "موسيقى عيد الميلاد",
   secSurprise: "المفاجأة المخفية",
@@ -213,6 +218,9 @@ const ar: Dict = {
 
   theme: "النمط",
   accent: "اللون المميز",
+  frameDesign: "تصميم الإطار",
+  frameColor: "لون الإطار",
+  framePreviewMessage: "ستظهر رسالتك هنا",
   decorations: "الزينة",
   decorationsHint: "زينة متحركة حقيقية في صفحة عيد الميلاد.",
 
