@@ -29,6 +29,8 @@ export type Database = {
           language: string
           main_message: string
           media: Json
+          message_frame_color: string | null
+          message_frame_style: string
           music_enabled: boolean
           music_url: string | null
           nickname: string | null
@@ -55,6 +57,8 @@ export type Database = {
           language?: string
           main_message?: string
           media?: Json
+          message_frame_color?: string | null
+          message_frame_style?: string
           music_enabled?: boolean
           music_url?: string | null
           nickname?: string | null
@@ -81,6 +85,8 @@ export type Database = {
           language?: string
           main_message?: string
           media?: Json
+          message_frame_color?: string | null
+          message_frame_style?: string
           music_enabled?: boolean
           music_url?: string | null
           nickname?: string | null
