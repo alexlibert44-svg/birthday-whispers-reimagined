@@ -200,7 +200,15 @@
   border-radius: 4px;
   background: linear-gradient(160deg, color-mix(in oklch, var(--frame-color) 32%, var(--background)), var(--background));
 }
-.message-frame--film::before { inset: 5px -10px; background: repeating-linear-gradient(to bottom, transparent 0 8px, color-mix(in oklch, white 76%, var(--frame-color)) 8px 13px, transparent 13px 21px); opacity: .72; }
+.message-frame--film::before,
+.message-frame--film::after {
+  inset-block: 5px;
+  width: 7px;
+  background: repeating-linear-gradient(to bottom, transparent 0 8px, color-mix(in oklch, white 76%, var(--frame-color)) 8px 13px, transparent 13px 21px);
+  opacity: .72;
+}
+.message-frame--film::before { inset-inline-start: -10px; }
+.message-frame--film::after { inset-inline-end: -10px; }
 
 .message-frame--glass {
   background: linear-gradient(135deg, color-mix(in oklch, var(--frame-color) 23%, transparent), color-mix(in oklch, var(--background) 72%, transparent));

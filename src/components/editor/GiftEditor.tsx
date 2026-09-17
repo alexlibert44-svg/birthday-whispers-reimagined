@@ -7,6 +7,8 @@ import {
   ACCENTS,
   DECORATIONS,
   DEFAULT_DECORATIONS,
+  MESSAGE_FRAME_COLORS,
+  MESSAGE_FRAMES,
   THEMES,
   TIME_ZONES,
   utcToZonedFields,
@@ -14,6 +16,7 @@ import {
   type DecorationKey,
   type GiftConfig,
   type MediaItem,
+  type MessageFrameStyle,
   type ThemeKey,
 } from "@/lib/gift";
 import { dirOf, translator, type Lang } from "@/lib/i18n";
@@ -42,6 +45,8 @@ type FormState = {
   musicEnabled: boolean;
   theme: ThemeKey;
   accentColor: string;
+  messageFrameStyle: MessageFrameStyle;
+  messageFrameColor: string;
   decorations: DecorationKey[];
 };
 
@@ -68,6 +73,8 @@ function defaultState(uiLang: Lang): FormState {
     musicEnabled: false,
     theme: "midnight",
     accentColor: THEMES.midnight.defaultAccent,
+    messageFrameStyle: "cinematic",
+    messageFrameColor: MESSAGE_FRAME_COLORS[0]?.value ?? THEMES.midnight.defaultAccent,
     decorations: DEFAULT_DECORATIONS,
   };
 }
@@ -93,6 +100,8 @@ function stateFromGift(gift: GiftConfig): FormState {
     musicEnabled: gift.musicEnabled,
     theme: gift.theme,
     accentColor: gift.accentColor,
+    messageFrameStyle: gift.messageFrameStyle,
+    messageFrameColor: gift.messageFrameColor ?? gift.accentColor,
     decorations: gift.decorations,
   };
 }
@@ -230,6 +239,8 @@ export function GiftEditor({
       musicEnabled: form.musicEnabled && !!form.musicUrl,
       theme: form.theme,
       accentColor: form.accentColor,
+      messageFrameStyle: form.messageFrameStyle,
+      messageFrameColor: form.messageFrameColor,
       decorations: form.decorations,
     }),
     [form, gift?.id, previewSkip],
@@ -263,6 +274,8 @@ export function GiftEditor({
       musicEnabled: form.musicEnabled,
       theme: form.theme,
       accentColor: form.accentColor,
+      messageFrameStyle: form.messageFrameStyle,
+      messageFrameColor: form.messageFrameColor,
       decorations: form.decorations,
     };
 
@@ -529,6 +542,83 @@ export function GiftEditor({
             placeholder={t("finalMessagePh")}
             className={field + " mt-2"}
           />
+        </div>
+      </Section>
+
+      <Section title={t("secMessageFrames")}>
+        <div>
+          <p className={label}>{t("frameDesign")}</p>
+          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {MESSAGE_FRAMES.map((frame) => {
+              const active = form.messageFrameStyle === frame.key;
+              return (
+                <button
+                  key={frame.key}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => set("messageFrameStyle", frame.key)}
+                  className={`relative min-w-0 border p-2 text-start transition-all ${
+                    active
+                      ? "border-white/70 bg-white/8 ring-1 ring-white/25"
+                      : "border-white/12 bg-white/3 hover:border-white/30"
+                  }`}
+                >
+                  <span
+                    className={`gift-message-frame message-frame--${frame.key} flex min-h-24 w-full items-center justify-center overflow-hidden p-3 text-center`}
+                    style={{ ["--message-frame-color" as string]: form.messageFrameColor }}
+                  >
+                    <span className="relative z-10 line-clamp-2 text-xs leading-relaxed text-white">
+                      {t("framePreviewMessage")}
+                    </span>
+                  </span>
+                  <span className="mt-2 flex min-h-8 items-center justify-between gap-1 px-1 text-xs text-white/70">
+                    <span>{uiLang === "ar" ? frame.labelAr : frame.label}</span>
+                    {active && <Check className="h-3.5 w-3.5 shrink-0 text-white" aria-hidden />}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div>
+          <p className={label}>{t("frameColor")}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            {MESSAGE_FRAME_COLORS.map((color) => {
+              const active = form.messageFrameColor.toLowerCase() === color.value.toLowerCase();
+              return (
+                <button
+                  key={color.value}
+                  type="button"
+                  aria-label={uiLang === "ar" ? color.labelAr : color.label}
+                  aria-pressed={active}
+                  title={uiLang === "ar" ? color.labelAr : color.label}
+                  onClick={() => set("messageFrameColor", color.value)}
+                  className={`flex h-10 w-10 items-center justify-center rounded-full border transition-transform hover:scale-105 ${
+                    active ? "border-white ring-2 ring-white/25" : "border-white/20"
+                  }`}
+                >
+                  <span className="h-7 w-7 rounded-full" style={{ background: color.value }} />
+                </button>
+              );
+            })}
+            <label
+              className="relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-white/20"
+              title={t("frameColor")}
+            >
+              <span
+                className="h-7 w-7 rounded-full border border-white/30"
+                style={{ background: form.messageFrameColor }}
+              />
+              <input
+                type="color"
+                value={form.messageFrameColor}
+                onChange={(event) => set("messageFrameColor", event.target.value)}
+                className="absolute inset-0 cursor-pointer opacity-0"
+                aria-label={t("frameColor")}
+              />
+            </label>
+          </div>
         </div>
       </Section>
 
